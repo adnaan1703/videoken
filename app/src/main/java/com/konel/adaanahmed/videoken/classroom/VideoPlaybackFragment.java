@@ -77,7 +77,7 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
             player = youTubePlayer;
             player.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
             if (!TextUtils.isEmpty(videoId))
-                player.cueVideo(videoId, startTime);
+                player.cueVideo(videoId, 2000);
         }
     }
 
