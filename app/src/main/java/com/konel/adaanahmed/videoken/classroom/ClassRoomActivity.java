@@ -1,14 +1,21 @@
 package com.konel.adaanahmed.videoken.classroom;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.konel.adaanahmed.videoken.R;
 import com.konel.adaanahmed.videoken.VkBaseActivity;
 import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
 import com.konel.adaanahmed.videoken.navigation.model.ClassRoomActivityNavigationModel;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +44,9 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     }
 
     private void initComponents() {
+        if (getActionBar() != null)
+            getActionBar().hide();
+
         model = getIntent().getParcelableExtra(NavigationUtil.KEY_DATA);
         audioButton.setOnClickListener(this);
         VideoPlaybackFragment fragment = VideoPlaybackFragment.newInstance(model.getYoutubeId(), model.getStartTime());
@@ -47,7 +57,38 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.activity_classroom_audio_button:
-                showToast("wow.. you are awesome!!");
+                promptSpeechInput();
+        }
+    }
+
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Bak be bro!");
+        try {
+            startActivityForResult(intent, 100);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "he is dumb", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case 100: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    showToast(result.get(0));
+                }
+                break;
+            }
+
         }
     }
 }
