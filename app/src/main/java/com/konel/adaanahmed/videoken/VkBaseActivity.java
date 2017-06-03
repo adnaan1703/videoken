@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 public abstract class VkBaseActivity extends AppCompatActivity {
 
-    public abstract void initComponents();
-
     public void showToast(String str, boolean showLong) {
         int duration = Toast.LENGTH_SHORT;
         if (showLong)

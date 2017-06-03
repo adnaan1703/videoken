@@ -12,14 +12,24 @@ import android.os.Parcelable;
 
 public class ClassRoomActivityNavigationModel implements Parcelable {
 
-    private String youtubeUrl;
+    private String youtubeId;
+    private int startTime;
 
-    public ClassRoomActivityNavigationModel(String youtubeUrl) {
-        this.youtubeUrl = youtubeUrl;
+    public ClassRoomActivityNavigationModel(String youtubeId) {
+        this(youtubeId, 0);
     }
 
-    public String getYoutubeUrl() {
-        return youtubeUrl;
+    public ClassRoomActivityNavigationModel(String youtubeId, int startTime) {
+        this.youtubeId = youtubeId;
+        this.startTime = startTime;
+    }
+
+    public String getYoutubeId() {
+        return youtubeId;
+    }
+
+    public int getStartTime() {
+        return startTime;
     }
 
     @Override
@@ -29,14 +39,16 @@ public class ClassRoomActivityNavigationModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.youtubeUrl);
+        dest.writeString(this.youtubeId);
+        dest.writeInt(this.startTime);
     }
 
     private ClassRoomActivityNavigationModel(Parcel in) {
-        this.youtubeUrl = in.readString();
+        this.youtubeId = in.readString();
+        this.startTime = in.readInt();
     }
 
-    public static final Parcelable.Creator<ClassRoomActivityNavigationModel> CREATOR = new Parcelable.Creator<ClassRoomActivityNavigationModel>() {
+    public static final Creator<ClassRoomActivityNavigationModel> CREATOR = new Creator<ClassRoomActivityNavigationModel>() {
         @Override
         public ClassRoomActivityNavigationModel createFromParcel(Parcel source) {
             return new ClassRoomActivityNavigationModel(source);

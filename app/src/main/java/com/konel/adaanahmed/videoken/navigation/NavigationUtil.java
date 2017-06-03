@@ -2,6 +2,7 @@ package com.konel.adaanahmed.videoken.navigation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import com.konel.adaanahmed.videoken.classroom.ClassRoomActivity;
 import com.konel.adaanahmed.videoken.navigation.model.ClassRoomActivityNavigationModel;
@@ -21,11 +22,12 @@ public class NavigationUtil {
         context.startActivity(getClassRoomActivityIntent(context, youtubeUrl));
     }
 
+    @NonNull
     private static Intent getClassRoomActivityIntent(Context context, String youtubeUrl) {
         ClassRoomActivityNavigationModel model = new ClassRoomActivityNavigationModel(youtubeUrl);
         Intent intent = new Intent(context, ClassRoomActivity.class);
         intent.putExtra(KEY_DATA, model);
-        return null;
+        return intent;
     }
 
 }
