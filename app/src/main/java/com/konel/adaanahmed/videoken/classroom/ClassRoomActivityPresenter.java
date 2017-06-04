@@ -76,6 +76,7 @@ class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter 
     public void onTextReceived(String text, int time) {
         Note note = new Note(text, time);
         mLesson = Repository.updateNoteInLesson(mRealm, mLesson, note);
+        mView.getNonNull().addNote(note);
     }
 
     private void dataReceivedFromDb(Lesson lesson) {

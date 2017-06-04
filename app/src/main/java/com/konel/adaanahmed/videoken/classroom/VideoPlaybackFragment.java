@@ -53,7 +53,7 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
     private void seekVideo(int startTime) {
         this.startTime = startTime;
         if (player != null)
-            player.seekToMillis(startTime);
+            player.loadVideo(videoId, startTime);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
 
     @Override
     public int getCurrentTime() {
-        if (player.isPlaying())
-            return player.getDurationMillis();
+        if (player != null)
+            return player.getCurrentTimeMillis();
         return 0;
     }
 

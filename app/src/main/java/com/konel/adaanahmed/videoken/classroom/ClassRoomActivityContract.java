@@ -1,5 +1,7 @@
 package com.konel.adaanahmed.videoken.classroom;
 
+import android.support.annotation.NonNull;
+
 import com.konel.adaanahmed.videoken.base.BasePresenter;
 import com.konel.adaanahmed.videoken.base.BaseView;
 import com.konel.adaanahmed.videoken.base.VkBaseActivity;
@@ -21,11 +23,10 @@ interface ClassRoomActivityContract {
 
         void showNotes(ArrayList<Note> notes);
 
+        void addNote(@NonNull Note note);
+
         void showMicTapText();
 
-        void showNoteAdditionSuccess(String message);
-
-        void showNoteAdditionFailure(String message);
     }
 
     interface Presenter extends BasePresenter<View> {

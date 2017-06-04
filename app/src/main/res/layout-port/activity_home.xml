@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,15 +12,10 @@
         android:iconifiedByDefault="false"
         android:queryHint="@string/home_search_view_hint" />
 
-    <TextView
-        android:id="@+id/home_activity_text"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/home_activity_lesson_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:textColor="@color/primaryText"
-        android:textSize="24sp"
-        tools:text="Adnaan Ahmed" />
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

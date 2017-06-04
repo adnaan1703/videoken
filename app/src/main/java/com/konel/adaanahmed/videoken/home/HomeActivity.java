@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
@@ -22,8 +21,6 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
 
     @BindView(R.id.home_activity_search)
     SearchView searchView;
-    @BindView(R.id.home_activity_text)
-    TextView textView;
 
     private HomeActivityPresenter presenter;
 
@@ -70,11 +67,9 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
 
     @Override
     public void showLessons(ArrayList<Lesson> lessons) {
-        textView.setText("Total lessons : " + String.valueOf(lessons.size()));
     }
 
     @Override
     public void showNoLesson() {
-        textView.setText("No lessons!!");
     }
 }

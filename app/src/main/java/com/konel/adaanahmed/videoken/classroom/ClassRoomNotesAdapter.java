@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
 import com.konel.adaanahmed.videoken.db.Note;
 
@@ -75,7 +76,7 @@ class ClassRoomNotesAdapter extends RecyclerView.Adapter<ClassRoomNotesAdapter.V
         void updateUI(Note note) {
             this.note = note;
             noteText.setText(note.getText());
-            noteTime.setText(String.valueOf(note.getTime()));
+            noteTime.setText(CodeUtil.millisToString(note.getTime()));
         }
 
         @Override

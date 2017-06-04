@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -101,7 +100,6 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
         if (videoPlaybackDelegator != null)
             videoPlaybackTime = videoPlaybackDelegator.getCurrentTime();
         presenter.onTextReceived(text, videoPlaybackTime);
-        adapter.addNote(new Note(text, videoPlaybackTime));
     }
 
     @NonNull
@@ -130,20 +128,20 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     }
 
     @Override
+    public void addNote(@NonNull Note note) {
+        if (adapter != null)
+            adapter.addNote(note);
+        else {
+            ArrayList<Note> noteArrayList = new ArrayList<>();
+            noteArrayList.add(note);
+            showNotes(noteArrayList);
+        }
+    }
+
+    @Override
     public void showMicTapText() {
         notesList.setVisibility(View.GONE);
         audioTapText.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showNoteAdditionSuccess(String message) {
-        showToast(message);
-    }
-
-    @Override
-    public void showNoteAdditionFailure(String message) {
-        showToast(message);
-        Log.e("Realm", message);
     }
 
     @Override
