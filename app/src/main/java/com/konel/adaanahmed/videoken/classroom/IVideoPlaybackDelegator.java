@@ -9,4 +9,6 @@ package com.konel.adaanahmed.videoken.classroom;
 
 interface IVideoPlaybackDelegator {
     int getCurrentTime();
+
+    void seekToTome(int startTime);
 }

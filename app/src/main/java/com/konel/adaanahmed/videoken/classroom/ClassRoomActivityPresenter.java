@@ -3,6 +3,7 @@ package com.konel.adaanahmed.videoken.classroom;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.base.VkBaseActivity;
 import com.konel.adaanahmed.videoken.base.VkWeakReference;
 import com.konel.adaanahmed.videoken.db.Lesson;
@@ -11,7 +12,10 @@ import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
 import com.konel.adaanahmed.videoken.navigation.model.ClassRoomActivityNavigationModel;
 import com.konel.adaanahmed.videoken.repository.Repository;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * @author : Adnaan 'Zohran' Ahmed <adnaanahmed@urbanclap.com>
@@ -19,29 +23,28 @@ import io.realm.Realm;
  * @since : 04 Jun 2017 4:31 AM
  */
 
+class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter {
 
-class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter,
-        Realm.Transaction.OnSuccess, Realm.Transaction.OnError {
-
-    private Intent intent;
+    private Intent mIntent;
     private VkWeakReference<ClassRoomActivityContract.View> mView;
     private ClassRoomActivityNavigationModel model;
     private Lesson mLesson;
+    private Realm mRealm = Realm.getDefaultInstance();
+
 
     ClassRoomActivityPresenter(@NonNull ClassRoomActivityContract.View view,
                                @NonNull Intent intent) {
         setView(view);
-        this.intent = intent;
+        mIntent = intent;
     }
 
     @Override
     public void onStart(ClassRoomActivityContract.View view) {
         if (mView.get() == null)
             setView(view);
-        model = intent.getParcelableExtra(NavigationUtil.KEY_DATA);
+        model = mIntent.getParcelableExtra(NavigationUtil.KEY_DATA);
         mView.getNonNull().showVideo(model.getYoutubeId(), model.getStartTime());
-        mLesson = new Lesson(model.getYoutubeId());
-        dataReceivedFromDb(Repository.findLesson(model.getYoutubeId()));
+        dataReceivedFromDb(Repository.findLesson(mRealm, model.getYoutubeId()));
     }
 
     @Override
@@ -50,6 +53,8 @@ class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter,
         if (mLesson != null)
             mLesson.removeAllChangeListeners();
 
+        if (mRealm != null)
+            mRealm.close();
     }
 
     @Override
@@ -60,7 +65,6 @@ class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter,
     @Override
     public void clearView() {
         mView.clear();
-
     }
 
     @Override
@@ -71,26 +75,26 @@ class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter,
     @Override
     public void onTextReceived(String text, int time) {
         Note note = new Note(text, time);
-        mLesson.addNote(note);
-        Repository.insertOrUpdateLesson(mLesson, this, this);
+        mLesson = Repository.updateNoteInLesson(mRealm, mLesson, note);
     }
 
     private void dataReceivedFromDb(Lesson lesson) {
         mLesson = lesson;
         if (mLesson == null) {
             mLesson = new Lesson(model.getYoutubeId());
-            Repository.insertOrUpdateLesson(mLesson, this, this);
+            mLesson = Repository.insertOrUpdateLesson(mRealm, mLesson);
         }
+        if (CodeUtil.isArrayEmpty(mLesson.getNotes()))
+            mView.getNonNull().showMicTapText();
+        else
+            mView.getNonNull().showNotes(transMutateToArrayList(mLesson.getNotes()));
     }
 
-    @Override
-    public void onError(Throwable error) {
-        mView.getNonNull().showNoteAdditionFailure("Error while saving!");
+    private ArrayList<Note> transMutateToArrayList(RealmList<Note> notes) {
+        ArrayList<Note> noteArrayList = new ArrayList<>();
+        for (Note note : notes) {
+            noteArrayList.add(note);
+        }
+        return noteArrayList;
     }
-
-    @Override
-    public void onSuccess() {
-        mView.getNonNull().showNoteAdditionSuccess("Successfully saved!");
-    }
-
 }

@@ -3,8 +3,7 @@ package com.konel.adaanahmed.videoken.repository;
 import android.support.annotation.NonNull;
 
 import com.konel.adaanahmed.videoken.db.Lesson;
-
-import java.util.ArrayList;
+import com.konel.adaanahmed.videoken.db.Note;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -18,41 +17,33 @@ import io.realm.RealmResults;
 
 public class Repository {
 
-    public static void insertOrUpdateLesson(@NonNull final Lesson lesson,
-                                            @NonNull Realm.Transaction.OnSuccess onSuccess,
-                                            @NonNull Realm.Transaction.OnError onError) {
+    public static Lesson insertOrUpdateLesson(@NonNull Realm realm,
+                                              @NonNull Lesson lesson) {
 
-        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealmOrUpdate(lesson);
-            }
-        }, onSuccess, onError);
+        realm.beginTransaction();
+        lesson = realm.copyToRealmOrUpdate(lesson);
+        realm.commitTransaction();
+        return lesson;
     }
 
-    public static void insertOrUpdateLessons(@NonNull final ArrayList<Lesson> lessons,
-                                             @NonNull Realm.Transaction.OnSuccess onSuccess,
-                                             @NonNull Realm.Transaction.OnError onError) {
-        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealmOrUpdate(lessons);
-            }
-        }, onSuccess, onError);
+    public static Lesson updateNoteInLesson(@NonNull Realm realm,
+                                            @NonNull Lesson lesson,
+                                            @NonNull Note note) {
+        realm.beginTransaction();
+        lesson.addNote(note);
+        realm.commitTransaction();
+        return lesson;
     }
 
-    public static Lesson findLesson(String videoId) {
-        return Realm.getDefaultInstance()
-                .where(Lesson.class)
+
+    public static Lesson findLesson(@NonNull Realm realm, String videoId) {
+        return realm.where(Lesson.class)
                 .equalTo("videoId", videoId)
                 .findFirst();
-
     }
 
-    public void findLessons() {
-        RealmResults<Lesson> lessons = Realm.getDefaultInstance()
-                .where(Lesson.class)
-                .findAll();
+    public static RealmResults<Lesson> findLessons(@NonNull Realm realm) {
+        return realm.where(Lesson.class).findAll();
     }
 
 }

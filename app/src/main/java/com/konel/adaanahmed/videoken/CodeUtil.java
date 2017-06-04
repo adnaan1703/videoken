@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.realm.RealmList;
+
 /**
  * @author : Adnaan 'Zohran' Ahmed <adnaan.1703@gmail.com>
  * @version : 1.0.0
@@ -30,6 +32,10 @@ public class CodeUtil {
 
     public static boolean isArrayEmpty(ArrayList arrayList) {
         return arrayList == null || arrayList.size() == 0;
+    }
+
+    public static boolean isArrayEmpty(RealmList realmList) {
+        return realmList == null || realmList.size() == 0;
     }
 
 }

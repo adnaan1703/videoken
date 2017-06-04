@@ -6,12 +6,17 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
 import com.konel.adaanahmed.videoken.base.VkBaseActivity;
+import com.konel.adaanahmed.videoken.db.Note;
 import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
 
 import java.util.ArrayList;
@@ -27,10 +32,17 @@ import butterknife.ButterKnife;
  */
 
 
-public class ClassRoomActivity extends VkBaseActivity implements View.OnClickListener, ClassRoomActivityContract.View {
+public class ClassRoomActivity extends VkBaseActivity implements View.OnClickListener,
+        ClassRoomActivityContract.View, ClassRoomNotesAdapter.ClassRoomNotesInteractionListener {
 
     @BindView(R.id.activity_classroom_audio_button)
     FrameLayout audioButton;
+    @BindView(R.id.activity_classroom_notes_list)
+    RecyclerView notesList;
+    @BindView(R.id.activity_classroom_audio_tap_text)
+    TextView audioTapText;
+
+    private ClassRoomNotesAdapter adapter;
 
     private ClassRoomActivityPresenter presenter;
     private IVideoPlaybackDelegator videoPlaybackDelegator;
@@ -45,6 +57,8 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
 
     private void initComponents() {
         audioButton.setOnClickListener(this);
+        notesList.setVisibility(View.GONE);
+        audioTapText.setVisibility(View.GONE);
         presenter = new ClassRoomActivityPresenter(this, getIntent());
     }
 
@@ -87,7 +101,7 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
         if (videoPlaybackDelegator != null)
             videoPlaybackTime = videoPlaybackDelegator.getCurrentTime();
         presenter.onTextReceived(text, videoPlaybackTime);
-
+        adapter.addNote(new Note(text, videoPlaybackTime));
     }
 
     @NonNull
@@ -104,6 +118,24 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     }
 
     @Override
+    public void showNotes(ArrayList<Note> notes) {
+        if (CodeUtil.isArrayEmpty(notes))
+            return;
+
+        adapter = new ClassRoomNotesAdapter(notes, this);
+        audioTapText.setVisibility(View.GONE);
+        notesList.setVisibility(View.VISIBLE);
+        notesList.setLayoutManager(new LinearLayoutManager(this));
+        notesList.setAdapter(adapter);
+    }
+
+    @Override
+    public void showMicTapText() {
+        notesList.setVisibility(View.GONE);
+        audioTapText.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showNoteAdditionSuccess(String message) {
         showToast(message);
     }
@@ -111,5 +143,12 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     @Override
     public void showNoteAdditionFailure(String message) {
         showToast(message);
+        Log.e("Realm", message);
+    }
+
+    @Override
+    public void onNoteClicked(int startTime) {
+        if (videoPlaybackDelegator != null)
+            videoPlaybackDelegator.seekToTome(startTime);
     }
 }

@@ -32,6 +32,7 @@
     </FrameLayout>
 
     <TextView
+        android:id="@+id/activity_classroom_audio_tap_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/activity_classroom_audio_button"
@@ -42,6 +43,17 @@
         android:text="@string/classroom_activity_mic_label"
         android:textColor="@color/secondaryText"
         android:textSize="16sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_classroom_notes_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/activity_classroom_audio_button"
+        android:layout_below="@id/activity_classroom_video_container"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp" />
 
 
 </RelativeLayout>

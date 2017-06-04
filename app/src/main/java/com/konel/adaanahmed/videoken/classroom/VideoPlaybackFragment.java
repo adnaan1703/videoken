@@ -1,7 +1,6 @@
 package com.konel.adaanahmed.videoken.classroom;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -17,7 +16,8 @@ import com.konel.adaanahmed.videoken.Config;
  */
 
 
-public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implements YouTubePlayer.OnInitializedListener, IVideoPlaybackDelegator {
+public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implements
+        YouTubePlayer.OnInitializedListener, IVideoPlaybackDelegator {
 
     private static final String KEY_VIDEO_ID = "videoId";
     private static final String KEY_TIME = "startTime";
@@ -50,15 +50,10 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
         this.initialize(Config.GOOGLE_DEV_KEY, this);
     }
 
-    private void loadVideo(@NonNull String videoId, int startTime) {
-        this.videoId = videoId;
+    private void seekVideo(int startTime) {
         this.startTime = startTime;
-        if (player != null) {
-            if (player.isPlaying())
-                player.pause();
-
-            player.loadVideo(videoId, startTime);
-        }
+        if (player != null)
+            player.seekToMillis(startTime);
     }
 
     @Override
@@ -90,4 +85,10 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
             return player.getDurationMillis();
         return 0;
     }
+
+    @Override
+    public void seekToTome(int startTime) {
+        seekVideo(startTime);
+    }
+
 }
