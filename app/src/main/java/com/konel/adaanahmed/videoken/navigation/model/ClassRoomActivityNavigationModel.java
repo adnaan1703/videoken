@@ -12,16 +12,28 @@ import android.os.Parcelable;
 
 public class ClassRoomActivityNavigationModel implements Parcelable {
 
+    public static final Creator<ClassRoomActivityNavigationModel> CREATOR = new Creator<ClassRoomActivityNavigationModel>() {
+        @Override
+        public ClassRoomActivityNavigationModel createFromParcel(Parcel source) {
+            return new ClassRoomActivityNavigationModel(source);
+        }
+
+        @Override
+        public ClassRoomActivityNavigationModel[] newArray(int size) {
+            return new ClassRoomActivityNavigationModel[size];
+        }
+    };
     private String youtubeId;
     private int startTime;
-
-    public ClassRoomActivityNavigationModel(String youtubeId) {
-        this(youtubeId, 0);
-    }
 
     public ClassRoomActivityNavigationModel(String youtubeId, int startTime) {
         this.youtubeId = youtubeId;
         this.startTime = startTime;
+    }
+
+    private ClassRoomActivityNavigationModel(Parcel in) {
+        this.youtubeId = in.readString();
+        this.startTime = in.readInt();
     }
 
     public String getYoutubeId() {
@@ -42,21 +54,4 @@ public class ClassRoomActivityNavigationModel implements Parcelable {
         dest.writeString(this.youtubeId);
         dest.writeInt(this.startTime);
     }
-
-    private ClassRoomActivityNavigationModel(Parcel in) {
-        this.youtubeId = in.readString();
-        this.startTime = in.readInt();
-    }
-
-    public static final Creator<ClassRoomActivityNavigationModel> CREATOR = new Creator<ClassRoomActivityNavigationModel>() {
-        @Override
-        public ClassRoomActivityNavigationModel createFromParcel(Parcel source) {
-            return new ClassRoomActivityNavigationModel(source);
-        }
-
-        @Override
-        public ClassRoomActivityNavigationModel[] newArray(int size) {
-            return new ClassRoomActivityNavigationModel[size];
-        }
-    };
 }

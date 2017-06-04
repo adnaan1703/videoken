@@ -24,13 +24,19 @@ public class NavigationUtil {
 
     public static final int SPEECH_TO_TEXT_ACTIVITY_RESULT_CODE = 0x00f;
 
-    public static void startClassRoomActivity(@NonNull Context context, @NonNull String youtubeUrl) {
-        context.startActivity(getClassRoomActivityIntent(context, youtubeUrl));
+    public static void startClassRoomActivity(@NonNull Context context,
+                                              @NonNull String videoId,
+                                              int startTime) {
+        context.startActivity(getClassRoomActivityIntent(context, videoId, startTime));
+    }
+
+    public static void startClassRoomActivity(@NonNull Context context, @NonNull String videoId) {
+        context.startActivity(getClassRoomActivityIntent(context, videoId, 0));
     }
 
     @NonNull
-    private static Intent getClassRoomActivityIntent(Context context, String youtubeUrl) {
-        ClassRoomActivityNavigationModel model = new ClassRoomActivityNavigationModel(youtubeUrl);
+    private static Intent getClassRoomActivityIntent(Context context, String videoId, int startTime) {
+        ClassRoomActivityNavigationModel model = new ClassRoomActivityNavigationModel(videoId, startTime);
         Intent intent = new Intent(context, ClassRoomActivity.class);
         intent.putExtra(KEY_DATA, model);
         return intent;

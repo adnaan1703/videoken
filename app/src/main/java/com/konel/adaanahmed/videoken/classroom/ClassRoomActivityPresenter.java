@@ -53,7 +53,7 @@ class ClassRoomActivityPresenter implements ClassRoomActivityContract.Presenter 
         if (mLesson != null)
             mLesson.removeAllChangeListeners();
 
-        if (mRealm != null)
+        if (mRealm != null && !mRealm.isClosed())
             mRealm.close();
     }
 

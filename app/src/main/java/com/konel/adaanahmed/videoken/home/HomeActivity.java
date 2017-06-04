@@ -3,6 +3,8 @@ package com.konel.adaanahmed.videoken.home;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.SearchView;
 
@@ -10,6 +12,7 @@ import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
 import com.konel.adaanahmed.videoken.base.VkBaseActivity;
 import com.konel.adaanahmed.videoken.db.Lesson;
+import com.konel.adaanahmed.videoken.db.Note;
 
 import java.util.ArrayList;
 
@@ -17,10 +20,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTextListener,
-        HomeActivityContract.View {
+        HomeActivityContract.View, HomeNotesListAdapter.HomeNotesInteractionListener {
 
     @BindView(R.id.home_activity_search)
     SearchView searchView;
+    @BindView(R.id.home_activity_lesson_list)
+    RecyclerView rvLessons;
 
     private HomeActivityPresenter presenter;
 
@@ -38,9 +43,15 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
         presenter.onStart(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onStop();
+    }
+
     private void initComponents() {
         searchView.setOnQueryTextListener(this);
-        presenter = new HomeActivityPresenter(this, getSupportLoaderManager());
+        presenter = new HomeActivityPresenter(this);
     }
 
     @Override
@@ -67,9 +78,17 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
 
     @Override
     public void showLessons(ArrayList<Lesson> lessons) {
+        rvLessons.setLayoutManager(new LinearLayoutManager(this));
+        rvLessons.setAdapter(new HomeLessonListAdapter(lessons, this));
     }
 
     @Override
     public void showNoLesson() {
+        // TODO: 04/Jun/17 @adnaan: nothing as for now..
+    }
+
+    @Override
+    public void onNoteSelected(String videoId, Note note) {
+        presenter.onNoteSelected(videoId, note.getTime());
     }
 }

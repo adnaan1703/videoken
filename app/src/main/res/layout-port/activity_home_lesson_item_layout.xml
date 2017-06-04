@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:paddingTop="16dp">
+
+    <TextView
+        android:id="@+id/lesson_item_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/secondaryText"
+        android:textSize="14sp"
+        tools:text="5" />
+
+    <TextView
+        android:id="@+id/lesson_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toLeftOf="@id/lesson_item_counter"
+        android:layout_toStartOf="@id/lesson_item_counter"
+        android:textColor="@color/primaryText"
+        android:textSize="18sp"
+        tools:text="56Be21" />
+
+    <TextView
+        android:id="@+id/lesson_item_no_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lesson_item_title"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="@string/no_notes_saved_for_this_lesson"
+        android:textColor="@color/primaryText"
+        android:textSize="20sp"
+        android:typeface="serif"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lesson_item_notes_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lesson_item_title"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingEnd="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="0dp"
+        android:paddingStart="16dp"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

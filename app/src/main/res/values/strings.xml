@@ -2,4 +2,5 @@
     <string name="app_name">Video Ken</string>
     <string name="home_search_view_hint">Enter youtube url</string>
     <string name="classroom_activity_mic_label">Tap on the mic to record notes</string>
+    <string name="no_notes_saved_for_this_lesson">No notes saved for this lesson</string>
 </resources>

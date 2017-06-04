@@ -24,5 +24,7 @@ interface HomeActivityContract {
         void getLessons();
 
         void onQuerySubmitted(String videoId);
+
+        void onNoteSelected(String videoId, int startTime);
     }
 }

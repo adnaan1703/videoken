@@ -13,6 +13,9 @@
     <color name="gradientDark">#8E9EAB</color>
     <color name="gradientLight">#EEF2F3</color>
 
+    <!--Custom color for specific use-->
+    <color name="home_activity_lesson_list_background">@color/icons</color>
+    <color name="home_note_list_thumbnail_text">#80FFFFFF</color>
 
 
 </resources>

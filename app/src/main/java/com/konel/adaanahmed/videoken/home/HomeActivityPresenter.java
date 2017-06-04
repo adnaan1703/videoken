@@ -1,18 +1,16 @@
 package com.konel.adaanahmed.videoken.home;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 
-import com.konel.adaanahmed.videoken.CodeUtil;
-import com.konel.adaanahmed.videoken.base.VkBaseAsyncTaskLoader;
 import com.konel.adaanahmed.videoken.base.VkWeakReference;
 import com.konel.adaanahmed.videoken.db.Lesson;
 import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
-import com.konel.adaanahmed.videoken.repository.loaders.LessonsLoader;
+import com.konel.adaanahmed.videoken.repository.Repository;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * @author : Adnaan 'Zohran' Ahmed <adnaanahmed@urbanclap.com>
@@ -21,16 +19,13 @@ import java.util.ArrayList;
  */
 
 
-class HomeActivityPresenter implements HomeActivityContract.Presenter,
-        LoaderManager.LoaderCallbacks<ArrayList<Lesson>> {
+class HomeActivityPresenter implements HomeActivityContract.Presenter {
 
     private VkWeakReference<HomeActivityContract.View> view;
-    private LoaderManager loaderManager;
+    private Realm realm = Realm.getDefaultInstance();
 
-    HomeActivityPresenter(@NonNull HomeActivityContract.View view,
-                          @NonNull LoaderManager loaderManager) {
+    HomeActivityPresenter(@NonNull HomeActivityContract.View view) {
         setView(view);
-        this.loaderManager = loaderManager;
     }
 
     public void setView(HomeActivityContract.View mView) {
@@ -52,11 +47,24 @@ class HomeActivityPresenter implements HomeActivityContract.Presenter,
     @Override
     public void onStop() {
         clearView();
+        if (realm != null && !realm.isClosed())
+            realm.close();
     }
 
     @Override
     public void getLessons() {
-        loaderManager.initLoader(VkBaseAsyncTaskLoader.getUniqueLoaderId(), null, this);
+        RealmResults<Lesson> results = Repository.findLessons(realm);
+        if (results.size() == 0)
+            view.getNonNull().showNoLesson();
+        else
+            view.getNonNull().showLessons(transMutateToArrayList(results));
+    }
+
+    private ArrayList<Lesson> transMutateToArrayList(RealmResults<Lesson> results) {
+        ArrayList<Lesson> lessonArrayList = new ArrayList<>();
+        for (Lesson lesson : results)
+            lessonArrayList.add(lesson);
+        return lessonArrayList;
     }
 
     @Override
@@ -65,19 +73,7 @@ class HomeActivityPresenter implements HomeActivityContract.Presenter,
     }
 
     @Override
-    public Loader<ArrayList<Lesson>> onCreateLoader(int id, Bundle args) {
-        return new LessonsLoader(view.getNonNull().getViewContext());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<ArrayList<Lesson>> loader, ArrayList<Lesson> data) {
-        if (CodeUtil.isArrayEmpty(data))
-            view.getNonNull().showNoLesson();
-        else
-            view.getNonNull().showLessons(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<ArrayList<Lesson>> loader) {
+    public void onNoteSelected(String videoId, int startTime) {
+        NavigationUtil.startClassRoomActivity(view.getNonNull().getViewContext(), videoId, startTime);
     }
 }
