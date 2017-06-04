@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
+import com.konel.adaanahmed.videoken.base.ExpandableTextView;
 import com.konel.adaanahmed.videoken.db.Note;
 
 import java.util.ArrayList;
@@ -61,9 +63,11 @@ class ClassRoomNotesAdapter extends RecyclerView.Adapter<ClassRoomNotesAdapter.V
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.note_list_item_text)
-        TextView noteText;
+        ExpandableTextView noteText;
         @BindView(R.id.note_list_item_time)
         TextView noteTime;
+        @BindView(R.id.note_list_item_more)
+        ImageView ivMore;
 
         private Note note;
 
@@ -77,12 +81,34 @@ class ClassRoomNotesAdapter extends RecyclerView.Adapter<ClassRoomNotesAdapter.V
             this.note = note;
             noteText.setText(note.getText());
             noteTime.setText(CodeUtil.millisToString(note.getTime()));
+            ivMore.setVisibility(View.INVISIBLE);
+            ivMore.setOnClickListener(null);
+
+            noteText.setEllipsisedListener(new ExpandableTextView.OnTextEllipsisedListener() {
+                @Override
+                public void onTextEllipsised() {
+                    ivMore.setVisibility(View.VISIBLE);
+                    ivMore.setOnClickListener(ViewHolder.this);
+                }
+            });
         }
 
         @Override
         public void onClick(View view) {
-            if (listener != null)
-                listener.onNoteClicked(note.getTime());
+
+            switch (view.getId()) {
+                case R.id.note_list_item_more:
+                    noteText.toggleExpand();
+                    if (noteText.isEllipsised())
+                        ivMore.setRotation(0);
+                    else
+                        ivMore.setRotation(180);
+                    break;
+                default:
+                    if (listener != null)
+                        listener.onNoteClicked(note.getTime());
+
+            }
         }
     }
 }

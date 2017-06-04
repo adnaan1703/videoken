@@ -8,14 +8,7 @@
     <color name="accent">#607D8B</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
     <color name="gradientDark">#8E9EAB</color>
     <color name="gradientLight">#EEF2F3</color>
-
-    <!--Custom color for specific use-->
-    <color name="home_activity_lesson_list_background">@color/icons</color>
-    <color name="home_note_list_thumbnail_text">#80FFFFFF</color>
-
 
 </resources>
