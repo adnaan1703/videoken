@@ -24,7 +24,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:textColor="@color/secondaryText"
-            android:textSize="14sp"
+            android:textSize="12sp"
             tools:text="22m 3s" />
 
         <com.konel.adaanahmed.videoken.base.ExpandableTextView
@@ -38,7 +38,7 @@
             android:layout_toStartOf="@id/note_list_item_time"
             android:ellipsize="end"
             android:textColor="@color/primaryText"
-            android:textSize="18sp"
+            android:textSize="14sp"
             tools:maxLines="2"
             tools:text="A quick brown fox jumped over a lazy white dog who was busy having gala time with his family in the gutter nearby a meat shop" />
 

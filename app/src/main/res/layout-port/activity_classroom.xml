@@ -13,19 +13,19 @@
 
     <FrameLayout
         android:id="@+id/activity_classroom_audio_button"
-        android:layout_width="48dp"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/background_round_accent"
-        android:elevation="4dp"
+        android:background="@color/accent"
+        android:elevation="16dp"
+        android:foreground="?attr/selectableItemBackground"
         tools:ignore="UnusedAttribute">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="6dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_mic"
             tools:ignore="ContentDescription" />
@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/activity_classroom_audio_button"
         android:layout_below="@id/activity_classroom_video_container"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:clipToPadding="false"
