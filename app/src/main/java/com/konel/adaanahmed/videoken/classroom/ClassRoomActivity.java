@@ -1,21 +1,20 @@
 package com.konel.adaanahmed.videoken.classroom;
 
-import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
+import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
-import com.konel.adaanahmed.videoken.VkBaseActivity;
+import com.konel.adaanahmed.videoken.base.VkBaseActivity;
 import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
-import com.konel.adaanahmed.videoken.navigation.model.ClassRoomActivityNavigationModel;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,12 +27,13 @@ import butterknife.ButterKnife;
  */
 
 
-public class ClassRoomActivity extends VkBaseActivity implements View.OnClickListener {
+public class ClassRoomActivity extends VkBaseActivity implements View.OnClickListener, ClassRoomActivityContract.View {
 
     @BindView(R.id.activity_classroom_audio_button)
     FrameLayout audioButton;
 
-    private ClassRoomActivityNavigationModel model;
+    private ClassRoomActivityPresenter presenter;
+    private IVideoPlaybackDelegator videoPlaybackDelegator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,32 +44,23 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
     }
 
     private void initComponents() {
-
-        model = getIntent().getParcelableExtra(NavigationUtil.KEY_DATA);
         audioButton.setOnClickListener(this);
-        VideoPlaybackFragment fragment = VideoPlaybackFragment.newInstance(model.getYoutubeId(), model.getStartTime());
-        getSupportFragmentManager().beginTransaction().add(R.id.activity_classroom_video_container, fragment).commitNow();
+        presenter = new ClassRoomActivityPresenter(this, getIntent());
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.activity_classroom_audio_button:
-                promptSpeechInput();
+                presenter.onMicClicked(this);
+                break;
         }
     }
 
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Bak be bro!");
-        try {
-            startActivityForResult(intent, 100);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(), "he is dumb", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart(this);
     }
 
     @Override
@@ -77,16 +68,48 @@ public class ClassRoomActivity extends VkBaseActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case 100: {
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    showToast(result.get(0));
+            case NavigationUtil.SPEECH_TO_TEXT_ACTIVITY_RESULT_CODE: {
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (CodeUtil.isArrayEmpty(result))
+                        showToast("Sorry unable to understand!");
+                    else
+                        manageTextInput(result.get(0));
                 }
                 break;
             }
 
         }
+    }
+
+    private void manageTextInput(String text) {
+        int videoPlaybackTime = 0;
+        if (videoPlaybackDelegator != null)
+            videoPlaybackTime = videoPlaybackDelegator.getCurrentTime();
+        presenter.onTextReceived(text, videoPlaybackTime);
+
+    }
+
+    @NonNull
+    @Override
+    public Context getViewContext() {
+        return this;
+    }
+
+    @Override
+    public void showVideo(String videoId, int startTime) {
+        VideoPlaybackFragment fragment = VideoPlaybackFragment.newInstance(videoId, startTime);
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_classroom_video_container, fragment).commitNow();
+        videoPlaybackDelegator = fragment;
+    }
+
+    @Override
+    public void showNoteAdditionSuccess(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void showNoteAdditionFailure(String message) {
+        showToast(message);
     }
 }

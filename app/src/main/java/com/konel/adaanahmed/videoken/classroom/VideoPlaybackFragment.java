@@ -11,31 +11,22 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.konel.adaanahmed.videoken.Config;
 
 /**
- * @author : Adnaan 'Zohran' Ahmed <adnaanahmed@urbanclap.com>
+ * @author : Adnaan 'Zohran' Ahmed <adnaan.1703@gmail.com>
  * @version : 1.0.0
  * @since : 03 Jun 2017 4:34 PM
  */
 
 
-public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implements YouTubePlayer.OnInitializedListener {
+public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implements YouTubePlayer.OnInitializedListener, IVideoPlaybackDelegator {
 
+    private static final String KEY_VIDEO_ID = "videoId";
+    private static final String KEY_TIME = "startTime";
     private YouTubePlayer player;
     private String videoId = null;
     private int startTime = 0;
 
-    private static final String KEY_VIDEO_ID = "videoId";
-    private static final String KEY_TIME = "startTime";
-
 
     public VideoPlaybackFragment() {
-    }
-
-    public static VideoPlaybackFragment newInstance() {
-        return newInstance(null, 0);
-    }
-
-    public static VideoPlaybackFragment newInstance(String videoId) {
-        return newInstance(videoId, 0);
     }
 
     public static VideoPlaybackFragment newInstance(String videoId, int timeInMillis) {
@@ -77,7 +68,7 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
             player = youTubePlayer;
             player.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
             if (!TextUtils.isEmpty(videoId))
-                player.cueVideo(videoId, 2000);
+                player.cueVideo(videoId, startTime);
         }
     }
 
@@ -87,8 +78,16 @@ public class VideoPlaybackFragment extends YouTubePlayerSupportFragment implemen
         if (error.isUserRecoverableError()) {
             error.getErrorDialog(getActivity(), 0).show();
         } else {
-            Toast.makeText(getContext(), "Error while initialisation :" + error.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Error while initialisation :" + error.toString(),
+                    Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public int getCurrentTime() {
+        if (player.isPlaying())
+            return player.getDurationMillis();
+        return 0;
     }
 }

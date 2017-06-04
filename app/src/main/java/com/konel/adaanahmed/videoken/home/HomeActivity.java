@@ -1,21 +1,31 @@
 package com.konel.adaanahmed.videoken.home;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.konel.adaanahmed.videoken.CodeUtil;
 import com.konel.adaanahmed.videoken.R;
-import com.konel.adaanahmed.videoken.VkBaseActivity;
-import com.konel.adaanahmed.videoken.navigation.NavigationUtil;
+import com.konel.adaanahmed.videoken.base.VkBaseActivity;
+import com.konel.adaanahmed.videoken.db.Lesson;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTextListener {
+public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTextListener,
+        HomeActivityContract.View {
 
     @BindView(R.id.home_activity_search)
     SearchView searchView;
+    @BindView(R.id.home_activity_text)
+    TextView textView;
+
+    private HomeActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +35,24 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
         initComponents();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart(this);
+    }
+
     private void initComponents() {
         searchView.setOnQueryTextListener(this);
+        presenter = new HomeActivityPresenter(this, getSupportLoaderManager());
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         query = query.trim();
         if (!TextUtils.isEmpty(query) && !TextUtils.isEmpty(CodeUtil.getYoutubeIdFromUrl(query))) {
-            NavigationUtil.startClassRoomActivity(this, CodeUtil.getYoutubeIdFromUrl(query));
+            presenter.onQuerySubmitted(CodeUtil.getYoutubeIdFromUrl(query));
         } else {
-            showToast("Please Enter the complete youtube url");
+            showToast("Please Enter the correct youtube url");
         }
         return false;
     }
@@ -43,5 +60,21 @@ public class HomeActivity extends VkBaseActivity implements SearchView.OnQueryTe
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    @NonNull
+    @Override
+    public Context getViewContext() {
+        return this;
+    }
+
+    @Override
+    public void showLessons(ArrayList<Lesson> lessons) {
+        textView.setText("Total lessons : " + String.valueOf(lessons.size()));
+    }
+
+    @Override
+    public void showNoLesson() {
+        textView.setText("No lessons!!");
     }
 }

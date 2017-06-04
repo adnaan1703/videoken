@@ -1,7 +1,7 @@
 package com.konel.adaanahmed.videoken;
 
 /**
- * @author : Adnaan 'Zohran' Ahmed <adnaanahmed@urbanclap.com>
+ * @author : Adnaan 'Zohran' Ahmed <adnaan.1703@gmail.com>
  * @version : 1.0.0
  * @since : 03 Jun 2017 3:13 PM
  */
